@@ -1,95 +1,65 @@
+# TensorFlow + Conda + PyCharm Setup Guide
 
-# Proyecto Python + TensorFlow con Conda
-
-Este repositorio contiene un proyecto base para trabajar con **Python 3.10** y **TensorFlow** dentro de un entorno Conda.
+Este README te guiará paso a paso para configurar un entorno de desarrollo con TensorFlow usando **Anaconda**, **PyCharm** y **Git**. Es ideal para entornos CPU y GPU.
 
 ---
 
-## 1. Crear entorno Conda
+## 📦 Requisitos Previos
+
+- Conocimientos básicos de Python.
+- Tener instalado:
+  - [Anaconda](https://www.anaconda.com/products/distribution)
+  - [PyCharm Community Edition](https://www.jetbrains.com/pycharm/download/)
+  - Git (opcional pero recomendado)
+  - Drivers NVIDIA (para usar GPU)
+
+---
+
+## 🔁 Alternativa sin instalación
+
+Si no querés instalar nada aún:
+- Usá Google Colab: https://colab.research.google.com/
+- Soporta TensorFlow preinstalado.
+
+```python
+import tensorflow as tf
+print(tf.__version__)
+```
+
+---
+
+## 🧠 Crear entorno Conda con TensorFlow
+
+### ▶️ Opción 1: Con soporte GPU
 
 ```bash
-conda create -n tf_env310 python=3.10
-conda activate tf_env310
+conda create --name tf_env tensorflow-gpu
+conda activate tf_env
 ```
 
----
+Ventajas:
+- Instala automáticamente CUDA y cuDNN compatibles.
 
-## 2. Instalar paquetes necesarios
+Nota: Las versiones de TensorFlow en conda suelen estar algo desactualizadas.
+
+### ▶️ Opción 2: CPU
 
 ```bash
-pip install --upgrade pip
-pip install tensorflow numpy
+conda create --name tf_env_cpu python=3.10
+conda activate tf_env_cpu
+conda install pip
+pip install tensorflow
 ```
 
-> ⚠️ Para evitar errores con NumPy y TensorFlow, usa Python 3.10 o 3.11 y versiones compatibles.
+### ▶️ Generar archivo `requirements.txt`
 
----
-
-## 3. Configurar PyCharm
-
-- En **File > Settings > Project: > Python Interpreter**, seleccioná el intérprete de Python del entorno Conda (`tf_env310`).
-- Asegurate que el intérprete apunta a algo como:  
-  `C:\Users\tu_usuario\anaconda3\envs\tf_env310\python.exe`
-- Al ejecutar, PyCharm usará ese entorno con las librerías instaladas.
-
----
-
-## 4. Manejo de advertencias comunes
-
-TensorFlow puede mostrar advertencias como:
-
-```
-oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors...
-```
-
-Para desactivar esta advertencia, exportá la variable de entorno antes de ejecutar:
+Una vez configurado:
 
 ```bash
-set TF_ENABLE_ONEDNN_OPTS=0      # Windows CMD
-# o en PowerShell:
-$env:TF_ENABLE_ONEDNN_OPTS=0
-# o en Linux/macOS:
-export TF_ENABLE_ONEDNN_OPTS=0
+pip freeze > requirements.txt
 ```
 
----
-
-## 5. Archivo `.gitignore` recomendado
-
-```gitignore
-# Python
-__pycache__/
-*.py[cod]
-
-# Conda environment files
-env/
-venv/
-.tf_env310/
-
-# PyCharm
-.idea/
-*.iml
-
-# Logs
-*.log
-
-# Jupyter
-.ipynb_checkpoints
-
-# TensorFlow saved models
-saved_model/
-```
-
----
-
-## 6. Archivo `requirements.txt`
-
-```txt
-tensorflow>=2.10
-numpy>=1.23
-```
-
-Instalación desde requirements:
+Y para instalar en otro entorno:
 
 ```bash
 pip install -r requirements.txt
@@ -97,41 +67,106 @@ pip install -r requirements.txt
 
 ---
 
-## 7. Subir proyecto a GitHub
+## 💻 Configuración de PyCharm
+
+1. Abrí PyCharm y creá un nuevo proyecto.
+2. Seleccioná: `Conda Environment > Existing Environment`
+3. Buscá el ejecutable del entorno:
+
+```
+C:/Users/TU_USUARIO/anaconda3/envs/tf_env/python.exe
+```
+
+4. Activá "Make available to all projects".
+5. Comprobá que funcione con:
+
+```python
+import tensorflow as tf
+print(tf.__version__)
+```
+
+---
+
+## 🧯 Solución de errores comunes
+
+### ⚠️ `mkl-service` warning
+```bash
+pip install mkl-service
+```
+
+### ⚠️ `collections.Callable` AttributeError
+
+Actualizar `pyreadline` o eliminarlo:
+```bash
+pip uninstall pyreadline
+pip install pyreadline3
+```
+
+### ⚠️ `No module named 'numpy.core._multiarray_umath'`
+Reinstalar NumPy compatible:
+```bash
+pip uninstall numpy
+pip install numpy==1.23.5
+```
+
+---
+
+## 🚀 Comandos útiles de Git
 
 ```bash
+# Iniciar repo
 git init
-git add .
-git commit -m "Primer commit"
-git remote add origin https://github.com/tu_usuario/tu_repositorio.git
+
+# Añadir remote (una sola vez)
+git remote add origin https://github.com/usuario/repositorio.git
+
+# Subir rama main
 git branch -M main
 git push -u origin main
 ```
 
-Si recibís error por commits remotos:
+---
 
-```bash
-git pull --rebase origin main
-git push -u origin main
+## 📁 .gitignore recomendado
+
+```gitignore
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.env
+
+# IDE
+.idea/
+.vscode/
+
+# Conda
+.conda/
+env/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
 ```
 
 ---
 
-## 8. Recomendaciones
+## 📌 Notas
 
-- Evitá usar Python 3.13 porque algunas librerías (como NumPy) aún no tienen soporte completo.
-- Usá entornos Conda para aislar dependencias y evitar conflictos.
-- Mantene actualizado pip y las librerías.
-- Consultá la [guía oficial de TensorFlow](https://www.tensorflow.org/install) para detalles específicos.
-
----
-
-¡Listo! Ya tenés un entorno preparado para empezar a aprender y trabajar con TensorFlow sin problemas.
+- Tutorial basado en: [TensorFlow Setup Tutorial - YouTube](https://www.youtube.com/watch?v=5Ym-dOS9ssA)
+- Compatible con Python 3.10 y TensorFlow 2.12+
+- Plataforma: Windows 10+
 
 ---
 
-Si querés, te ayudo a crear un script de instalación automática o a configurar PyCharm paso a paso.
+## 🧪 Test de entorno
+
+```bash
+conda activate tf_env
+python -c "import tensorflow as tf; print(tf.__version__)"
+```
 
 ---
 
-¿Te sirvió? ¿Querés que lo adapte a tu proyecto o que te ayude con algún otro tema?
+¡Listo! Ya podés empezar tus proyectos de Deep Learning con TensorFlow. 🚀
