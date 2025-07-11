@@ -7,14 +7,17 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.utils import to_categorical
 
+# Asegurar ejecución eager (modo default en TF 2.x)
+tf.config.run_functions_eagerly(True)
+
 # Cargar datos
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 # Normalizar a [0,1] y codificar etiquetas
 x_train = x_train / 255.0
 x_test = x_test / 255.0
-y_train = to_categorical(y_train)
-y_test = to_categorical(y_test)
+y_train = to_categorical(y_train, num_classes=10)
+y_test = to_categorical(y_test, num_classes=10)
 
 # Modelo simple
 model = Sequential([
