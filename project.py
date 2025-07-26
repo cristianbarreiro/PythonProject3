@@ -53,17 +53,24 @@ model.add(layers.Dense(512, activation="relu"))
 model.add(layers.Dense(256, activation="relu"))
 model.add(layers.Dense(10))
 
-#print(model.summary())
+model = keras.Model(inputs=model.inputs, outputs=[model.layers[-2].output])
+feature = model.predict(x_train)
 
+print(feature.shape
+      )
+#print(model.summary())
+import sys
+sys.exit()
 #Functional API (a bit more flexible)
 
 inputs = keras.Input(shape=(784))
-x = layers.Dense(512, activation="relu")(inputs)
-x = layers.Dense(256, activation="relu")(x)
+x = layers.Dense(512, activation="relu", name="first_layer")(inputs)
+x = layers.Dense(256, activation="relu", name="second_layer")(x)
 outputs = layers.Dense(10, activation="softmax")(x)
+model = keras.Model(inputs=inputs, outputs=outputs)
 
-import sys
-sys.exit()
+#import sys
+#sys.exit()
 
 # noinspection PyUnreachableCode
 model.compile(
