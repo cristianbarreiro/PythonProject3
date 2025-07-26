@@ -53,11 +53,13 @@ model.add(layers.Dense(512, activation="relu"))
 model.add(layers.Dense(256, activation="relu"))
 model.add(layers.Dense(10))
 
-model = keras.Model(inputs=model.inputs, outputs=[model.layers[-2].output])
-feature = model.predict(x_train)
+model = keras.Model(inputs=model.inputs, outputs=[layer.output for layer in model.layers])
 
-print(feature.shape
-      )
+features = model.predict(x_train)
+
+for feature in features:
+    print(feature.shape)
+
 #print(model.summary())
 import sys
 sys.exit()
