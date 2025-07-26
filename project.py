@@ -39,3 +39,38 @@ print(x_train[0].numpy())  # muestra el vector de 784 valores normalizados
 
 # Sequential API (Very convenient, not very flexible)
 
+model = keras.Sequential(
+    [
+        layers.Dense(512, activation="relu"),
+        layers.Dense(256, activation="relu"),
+        layers.Dense(10),
+    ]
+)
+
+model = keras.Sequential()
+model.add(keras.Input(shape=(784)))
+model.add(layers.Dense(512, activation="relu"))
+model.add(layers.Dense(256, activation="relu"))
+model.add(layers.Dense(10))
+
+#print(model.summary())
+
+#Functional API (a bit more flexible)
+
+inputs = keras.Input(shape=(784))
+x = layers.Dense(512, activation="relu")(inputs)
+x = layers.Dense(256, activation="relu")(x)
+outputs = layers.Dense(10, activation="softmax")(x)
+
+import sys
+sys.exit()
+
+# noinspection PyUnreachableCode
+model.compile(
+    loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    optimizer=keras.optimizers.Adam(lr=0.001),
+    metrics=["accuracy"],
+)
+
+model.fit(x_train, y_train, batch_size=32, epochs=5, verbose=2)
+model.evaluate(x_test, y_test, batch_size=32, verbose=2)
